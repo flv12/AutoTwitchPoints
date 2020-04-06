@@ -1,8 +1,10 @@
-var search = setInterval(function () {
-	var finding = $(".claimable-bonus__icon");
+setInterval(findPoints, 5000);
+
+function findPoints() {
+	let finding = document.getElementsByClassName("claimable-bonus__icon");
 
 	if (finding.length != 0) {
-		finding.trigger("click");
-		console.log("[AutoTwitchPoints]" + " +50");
+		finding[0].click();
+		console.log("[AutoTwitchPoints] +50");
 	}
-}, 5000);
+}

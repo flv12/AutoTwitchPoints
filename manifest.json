@@ -1,7 +1,7 @@
 {
 	"manifest_version": 2,
 	"name": "AutoTwitchPoints",
-	"version": "1.0",
+	"version": "1.1",
 
 	"description": "Automatically collects twitch channel points",
 
@@ -13,7 +13,7 @@
 	"content_scripts": [
 		{
 			"matches": ["*://*.twitch.tv/*"],
-			"js": ["js/jquery-3.4.1.slim.min.js", "js/app.js"]
+			"js": ["js/app.js"]
 		}
 	]
 }
