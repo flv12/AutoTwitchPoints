@@ -47,15 +47,12 @@ function addPoints() {
 initPoints();
 
 setInterval(function() {
-    let finding = document.getElementsByClassName("claimable-bonus__icon");
+    let finding = document.querySelector(".claimable-bonus__icon");
     
-    if (finding.length != 0) {
-
-        finding[0].click();
+    if (finding) {
+        finding.click();        
         console.log("[AutoTwitchPoints] +50");
-        
         addPoints();
-
     }
 
 }, 10000);
