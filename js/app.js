@@ -29,16 +29,33 @@ function initPoints() {
  */
 function addPoints() {
 
-    browser.storage.sync.get("points")
-    .then(function(data) {
+    var interval = setInterval( function() {
 
-        browser.storage.sync.set({
+        var ptsWon = document.querySelector(".pulse-animation .tw-c-text-link").textContent;
 
-            points: parseFloat(data.points)+50
+        if (ptsWon) {
+
+            clearInterval(interval);
             
-        });
+            // Remove the plus sign in "+50 / +100"
+            ptsWon = ptsWon.substring(1);
 
-    });
+            browser.storage.sync.get("points")
+            .then( function(data) {
+                
+                browser.storage.sync.set({
+
+                    points: parseFloat(data.points) + parseFloat(ptsWon)
+                    
+                }).then( () => {
+                    console.log(`[AutoTwitchPoints] +${ptsWon}`);
+                });
+
+            });
+
+        }
+    }, 1000);
+
 }
 
 /**
@@ -47,15 +64,11 @@ function addPoints() {
 initPoints();
 
 setInterval(function() {
-    let finding = document.getElementsByClassName("claimable-bonus__icon");
+    let finding = document.querySelector(".claimable-bonus__icon");
     
-    if (finding.length != 0) {
-
-        finding[0].click();
-        console.log("[AutoTwitchPoints] +50");
-        
+    if (finding) {
+        finding.click();        
         addPoints();
-
     }
 
 }, 10000);
