@@ -1,17 +1,62 @@
-browser.storage.sync.get("points")
-    .then(function (data) {
+/**
+ * Browser API compatibility wrapper (Chrome/Firefox)
+ */
+const browserAPI = typeof browser !== 'undefined' ? browser : chrome;
 
-        const text = `<p>${data.points} points won without doing anything ! &#128077</p>`;
-        
-        /**
-         * Warning FIX to pass firefox validator who doesnt likes .innerHTML
-         */
-        const parser = new DOMParser()
-        const parsed = parser.parseFromString(text, `text/html`)
-        const tags = parsed.getElementsByTagName(`p`);
-        
-        for (const tag of tags) {
-            document.querySelector(".points").appendChild(tag);
-        }
-        
+/**
+ * Format large numbers with spaces (French style)
+ * @param {number} num
+ * @returns {string}
+ */
+function formatNumber(num) {
+    return num.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ' ');
+}
+
+/**
+ * Get stats from storage and display them
+ */
+function displayStats() {
+    browserAPI.storage.sync.get(['points', 'claims'], function(data) {
+        const points = data?.points || 0;
+        const claims = data?.claims || 0;
+        const avg = claims > 0 ? Math.round(points / claims) : 0;
+
+        document.getElementById('total-points').textContent = formatNumber(points);
+        document.getElementById('claims-count').textContent = formatNumber(claims);
+        document.getElementById('avg-points').textContent = formatNumber(avg);
     });
+}
+
+/**
+ * Show confirmation box
+ */
+function showConfirm() {
+    document.getElementById('confirm-box').classList.add('visible');
+    document.getElementById('reset-btn').style.display = 'none';
+}
+
+/**
+ * Hide confirmation box
+ */
+function hideConfirm() {
+    document.getElementById('confirm-box').classList.remove('visible');
+    document.getElementById('reset-btn').style.display = 'block';
+}
+
+/**
+ * Reset all statistics
+ */
+function resetStats() {
+    browserAPI.storage.sync.set({ points: 0, claims: 0 }, function() {
+        displayStats();
+        hideConfirm();
+    });
+}
+
+// Initialize
+displayStats();
+
+// Event listeners
+document.getElementById('reset-btn').addEventListener('click', showConfirm);
+document.getElementById('btn-confirm').addEventListener('click', resetStats);
+document.getElementById('btn-cancel').addEventListener('click', hideConfirm);
