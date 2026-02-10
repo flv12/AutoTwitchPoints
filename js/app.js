@@ -282,3 +282,20 @@ if (document.readyState === 'loading') {
 } else {
     initObserver();
 }
+
+// Export for testing (Node.js environment only)
+if (typeof module !== 'undefined' && module.exports) {
+    module.exports = {
+        logError,
+        log,
+        logDebug,
+        findElementWithFallback,
+        initPoints,
+        addPoints,
+        tryClaimPoints,
+        initObserver,
+        CLAIM_BUTTON_SELECTORS,
+        POINTS_DISPLAY_SELECTORS,
+        POINTS_CONTAINER_SELECTORS
+    };
+}
