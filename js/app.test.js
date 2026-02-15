@@ -310,5 +310,21 @@ describe('AutoTwitchPoints', () => {
             );
         });
     });
+
+    describe('i18n API', () => {
+        test('browserAPI.i18n.getMessage should return translation for known key', () => {
+            const translation = global.browserAPI.i18n.getMessage('pointsCollected');
+            expect(translation).toBe('Points collected');
+        });
+
+        test('browserAPI.i18n.getMessage should return key for unknown key', () => {
+            const translation = global.browserAPI.i18n.getMessage('unknownKey');
+            expect(translation).toBe('unknownKey');
+        });
+
+        test('browserAPI.i18n.getMessage should be callable', () => {
+            expect(typeof global.browserAPI.i18n.getMessage).toBe('function');
+        });
+    });
 });
 

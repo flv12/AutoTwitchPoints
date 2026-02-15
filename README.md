@@ -23,6 +23,11 @@ Automatically collects Twitch channel points bonus.
 3. Click "Load Temporary Add-on"
 4. Select the `manifest.json` file
 
+### Firefox (build for prod)
+```bash
+zip -r -FS ../autotwitchpoints.zip manifest.json icons/ js/ popup/ _locales/
+```
+
 ### Chrome (Manual)
 1. Download or clone this repository
 2. Open Chrome and go to `chrome://extensions/`
