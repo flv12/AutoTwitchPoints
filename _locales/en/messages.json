@@ -1,0 +1,91 @@
+{
+    "pointsCollected": {
+        "message": "Points collected",
+        "description": "Label for total points"
+    },
+    "claims": {
+        "message": "Claims",
+        "description": "Label for number of claims"
+    },
+    "averagePerClaim": {
+        "message": "Average/claim",
+        "description": "Label for average points per claim"
+    },
+    "extensionActive": {
+        "message": "Extension active",
+        "description": "Status message when extension is running"
+    },
+    "resetStats": {
+        "message": "Reset statistics",
+        "description": "Button text to reset stats"
+    },
+    "confirmReset": {
+        "message": "Reset all statistics?",
+        "description": "Confirmation message for reset"
+    },
+    "confirm": {
+        "message": "Confirm",
+        "description": "Confirm button text"
+    },
+    "cancel": {
+        "message": "Cancel",
+        "description": "Cancel button text"
+    },
+    "logInitializing": {
+        "message": "Initializing storage...",
+        "description": "Log message for storage init"
+    },
+    "logStorageInitialized": {
+        "message": "Storage initialized",
+        "description": "Log message when storage is initialized"
+    },
+    "logStorageLoaded": {
+        "message": "Storage loaded: points=$POINTS$, claims=$CLAIMS$",
+        "description": "Log message when storage is loaded",
+        "placeholders": {
+            "points": { "content": "$1" },
+            "claims": { "content": "$2" }
+        }
+    },
+    "logLoaded": {
+        "message": "AutoTwitchPoints v2.0 loaded!",
+        "description": "Log message when extension loads"
+    },
+    "logFoundClaimButton": {
+        "message": "Found claim button! Clicking...",
+        "description": "Log message when claim button is found"
+    },
+    "logClicked": {
+        "message": "Clicked! Waiting for points animation...",
+        "description": "Log message after clicking"
+    },
+    "logDetectedPoints": {
+        "message": "Detected points: $POINTS$",
+        "description": "Log message for detected points",
+        "placeholders": {
+            "points": { "content": "$1" }
+        }
+    },
+    "logPointsAdded": {
+        "message": "+$POINTS$ points! (Total: $TOTAL$, Claims: $CLAIMS$)",
+        "description": "Log message when points are added",
+        "placeholders": {
+            "points": { "content": "$1" },
+            "total": { "content": "$2" },
+            "claims": { "content": "$3" }
+        }
+    },
+    "logFallbackPoints": {
+        "message": "Could not detect points amount, using default (50)",
+        "description": "Log message when using fallback points"
+    },
+    "logObserverStarted": {
+        "message": "MutationObserver started - watching for bonus points...",
+        "description": "Log message when observer starts"
+    },
+    "logInitialCheck": {
+        "message": "Initial check for existing claim button...",
+        "description": "Log message for initial check"
+    }
+}
+
