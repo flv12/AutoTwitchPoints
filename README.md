@@ -28,7 +28,7 @@ Automatically collects Twitch channel points bonus.
 
 ### Firefox (build for prod)
 ```bash
-zip -r -FS ../autotwitchpoints.zip manifest.json icons/ js/ popup/ _locales/
+zip -r -FS ../autotwitchpoints.zip manifest.json icons/ src/ _locales/
 ```
 
 ### Chrome (Manual)
