@@ -31,6 +31,30 @@
         "message": "Annuler",
         "description": "Texte du bouton annuler"
     },
+    "channelStatsTitle": {
+        "message": "Stats par chaîne",
+        "description": "Titre de la vue des stats par chaîne"
+    },
+    "settingsTitle": {
+        "message": "Réglages",
+        "description": "Titre de la vue des réglages"
+    },
+    "dangerZone": {
+        "message": "Zone de danger",
+        "description": "Titre de section pour les actions dangereuses"
+    },
+    "noChannelStats": {
+        "message": "Aucune statistique par chaîne",
+        "description": "Message quand il n'y a pas de stats par chaîne"
+    },
+    "debugSettings": {
+        "message": "Débogage",
+        "description": "Titre de section pour les réglages de debug"
+    },
+    "enableDebugLogs": {
+        "message": "Activer les logs de debug",
+        "description": "Label pour le toggle debug"
+    },
     "logInitializing": {
         "message": "Initialisation du stockage...",
         "description": "Message de log pour l'init du stockage"
@@ -48,7 +72,7 @@
         }
     },
     "logLoaded": {
-        "message": "AutoTwitchPoints v2.0 chargé !",
+        "message": "AutoTwitchPoints v2.1 chargé !",
         "description": "Message de log au chargement de l'extension"
     },
     "logFoundClaimButton": {

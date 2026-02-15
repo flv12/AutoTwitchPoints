@@ -7,7 +7,10 @@ Automatically collects Twitch channel points bonus.
 ## Features
 
 - 🎯 **Auto-claim** - Automatically clicks the bonus points button
-- 📊 **Points counter** - Tracks total points collected
+- 📊 **Stats per channel** - Track points collected on each Twitch channel
+- 🗑️ **Individual reset** - Delete stats for specific channels
+- 🔧 **Debug mode** - Toggle debug logs on/off from settings
+- 🌍 **Multi-language** - Supports EN, FR, DE, ES, RU
 - 🔄 **Resilient detection** - Multiple selector fallbacks if Twitch updates their UI
 - ⚡ **Efficient** - Uses MutationObserver instead of polling
 - 🌐 **Cross-browser** - Works on Firefox and Chrome
@@ -43,6 +46,12 @@ Once installed, just visit any Twitch channel. The extension will automatically:
 3. Track your total points (visible in the popup)
 
 ## Changelog
+
+### v2.1
+- Added stats per channel (📊 button)
+- Added settings page (⚙️ button)
+- Added debug mode toggle
+- Added individual channel stats deletion
 
 ### v2.0
 - Migrated to Manifest V3

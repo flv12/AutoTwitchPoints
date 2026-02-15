@@ -34,7 +34,10 @@ const mockStorage = {
 
 const mockBrowserAPI = {
     storage: {
-        sync: mockStorage
+        sync: mockStorage,
+        onChanged: {
+            addListener: jest.fn()
+        }
     },
     runtime: {
         lastError: null
@@ -52,7 +55,7 @@ const mockBrowserAPI = {
                 'confirm': 'Confirm',
                 'cancel': 'Cancel',
                 'logInitializing': 'Initializing storage...',
-                'logLoaded': 'AutoTwitchPoints v2.0 loaded!'
+                'logLoaded': 'AutoTwitchPoints v2.1 loaded!'
             };
             return translations[key] || key;
         })
