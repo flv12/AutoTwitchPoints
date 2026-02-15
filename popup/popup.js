@@ -4,6 +4,19 @@
 const browserAPI = typeof browser !== 'undefined' ? browser : chrome;
 
 /**
+ * Apply i18n translations to elements with data-i18n attribute
+ */
+function applyTranslations() {
+    document.querySelectorAll('[data-i18n]').forEach(element => {
+        const key = element.getAttribute('data-i18n');
+        const translation = browserAPI.i18n.getMessage(key);
+        if (translation) {
+            element.textContent = translation;
+        }
+    });
+}
+
+/**
  * Format large numbers with spaces (French style)
  * @param {number} num
  * @returns {string}
@@ -54,6 +67,7 @@ function resetStats() {
 }
 
 // Initialize
+applyTranslations();
 displayStats();
 
 // Event listeners

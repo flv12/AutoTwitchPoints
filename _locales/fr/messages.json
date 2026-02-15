@@ -1,0 +1,91 @@
+{
+    "pointsCollected": {
+        "message": "Points collectés",
+        "description": "Label pour le total de points"
+    },
+    "claims": {
+        "message": "Réclamations",
+        "description": "Label pour le nombre de réclamations"
+    },
+    "averagePerClaim": {
+        "message": "Moyenne/claim",
+        "description": "Label pour la moyenne par réclamation"
+    },
+    "extensionActive": {
+        "message": "Extension active",
+        "description": "Message de statut quand l'extension fonctionne"
+    },
+    "resetStats": {
+        "message": "Réinitialiser les statistiques",
+        "description": "Texte du bouton de réinitialisation"
+    },
+    "confirmReset": {
+        "message": "Réinitialiser toutes les statistiques ?",
+        "description": "Message de confirmation"
+    },
+    "confirm": {
+        "message": "Confirmer",
+        "description": "Texte du bouton confirmer"
+    },
+    "cancel": {
+        "message": "Annuler",
+        "description": "Texte du bouton annuler"
+    },
+    "logInitializing": {
+        "message": "Initialisation du stockage...",
+        "description": "Message de log pour l'init du stockage"
+    },
+    "logStorageInitialized": {
+        "message": "Stockage initialisé",
+        "description": "Message de log quand le stockage est initialisé"
+    },
+    "logStorageLoaded": {
+        "message": "Stockage chargé : points=$POINTS$, claims=$CLAIMS$",
+        "description": "Message de log quand le stockage est chargé",
+        "placeholders": {
+            "points": { "content": "$1" },
+            "claims": { "content": "$2" }
+        }
+    },
+    "logLoaded": {
+        "message": "AutoTwitchPoints v2.0 chargé !",
+        "description": "Message de log au chargement de l'extension"
+    },
+    "logFoundClaimButton": {
+        "message": "Bouton de réclamation trouvé ! Clic...",
+        "description": "Message de log quand le bouton est trouvé"
+    },
+    "logClicked": {
+        "message": "Cliqué ! En attente de l'animation des points...",
+        "description": "Message de log après le clic"
+    },
+    "logDetectedPoints": {
+        "message": "Points détectés : $POINTS$",
+        "description": "Message de log pour les points détectés",
+        "placeholders": {
+            "points": { "content": "$1" }
+        }
+    },
+    "logPointsAdded": {
+        "message": "+$POINTS$ points ! (Total: $TOTAL$, Claims: $CLAIMS$)",
+        "description": "Message de log quand les points sont ajoutés",
+        "placeholders": {
+            "points": { "content": "$1" },
+            "total": { "content": "$2" },
+            "claims": { "content": "$3" }
+        }
+    },
+    "logFallbackPoints": {
+        "message": "Impossible de détecter le montant, utilisation de la valeur par défaut (50)",
+        "description": "Message de log lors de l'utilisation du fallback"
+    },
+    "logObserverStarted": {
+        "message": "MutationObserver démarré - surveillance des points bonus...",
+        "description": "Message de log au démarrage de l'observer"
+    },
+    "logInitialCheck": {
+        "message": "Vérification initiale du bouton de réclamation...",
+        "description": "Message de log pour la vérification initiale"
+    }
+}
+

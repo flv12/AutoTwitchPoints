@@ -38,6 +38,24 @@ const mockBrowserAPI = {
     },
     runtime: {
         lastError: null
+    },
+    i18n: {
+        getMessage: jest.fn((key, substitutions) => {
+            // Simple mock that returns the key or a test translation
+            const translations = {
+                'pointsCollected': 'Points collected',
+                'claims': 'Claims',
+                'averagePerClaim': 'Average/claim',
+                'extensionActive': 'Extension active',
+                'resetStats': 'Reset statistics',
+                'confirmReset': 'Reset all statistics?',
+                'confirm': 'Confirm',
+                'cancel': 'Cancel',
+                'logInitializing': 'Initializing storage...',
+                'logLoaded': 'AutoTwitchPoints v2.0 loaded!'
+            };
+            return translations[key] || key;
+        })
     }
 };
 
