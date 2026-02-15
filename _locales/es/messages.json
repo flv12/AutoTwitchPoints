@@ -1,0 +1,115 @@
+{
+    "pointsCollected": {
+        "message": "Puntos recolectados",
+        "description": "Etiqueta para puntos totales"
+    },
+    "claims": {
+        "message": "Reclamaciones",
+        "description": "Etiqueta para número de reclamaciones"
+    },
+    "averagePerClaim": {
+        "message": "Promedio/reclamación",
+        "description": "Etiqueta para puntos promedio por reclamación"
+    },
+    "extensionActive": {
+        "message": "Extensión activa",
+        "description": "Mensaje de estado cuando la extensión está activa"
+    },
+    "resetStats": {
+        "message": "Restablecer estadísticas",
+        "description": "Texto del botón para restablecer"
+    },
+    "confirmReset": {
+        "message": "¿Restablecer todas las estadísticas?",
+        "description": "Mensaje de confirmación para restablecer"
+    },
+    "confirm": {
+        "message": "Confirmar",
+        "description": "Texto del botón confirmar"
+    },
+    "cancel": {
+        "message": "Cancelar",
+        "description": "Texto del botón cancelar"
+    },
+    "channelStatsTitle": {
+        "message": "Estadísticas por canal",
+        "description": "Título para vista de estadísticas por canal"
+    },
+    "settingsTitle": {
+        "message": "Configuración",
+        "description": "Título para vista de configuración"
+    },
+    "dangerZone": {
+        "message": "Zona de peligro",
+        "description": "Título de sección para acciones peligrosas"
+    },
+    "noChannelStats": {
+        "message": "Aún no hay estadísticas por canal",
+        "description": "Mensaje cuando no existen estadísticas por canal"
+    },
+    "debugSettings": {
+        "message": "Depuración",
+        "description": "Título de sección para configuración de depuración"
+    },
+    "enableDebugLogs": {
+        "message": "Activar registros de depuración",
+        "description": "Etiqueta para interruptor de depuración"
+    },
+    "logInitializing": {
+        "message": "Inicializando almacenamiento...",
+        "description": "Mensaje de registro para init de almacenamiento"
+    },
+    "logStorageInitialized": {
+        "message": "Almacenamiento inicializado",
+        "description": "Mensaje de registro cuando el almacenamiento está inicializado"
+    },
+    "logStorageLoaded": {
+        "message": "Almacenamiento cargado: puntos=$POINTS$, reclamaciones=$CLAIMS$",
+        "description": "Mensaje de registro cuando el almacenamiento está cargado",
+        "placeholders": {
+            "points": { "content": "$1" },
+            "claims": { "content": "$2" }
+        }
+    },
+    "logLoaded": {
+        "message": "¡AutoTwitchPoints v2.1 cargado!",
+        "description": "Mensaje de registro cuando la extensión carga"
+    },
+    "logFoundClaimButton": {
+        "message": "¡Botón de reclamar encontrado! Haciendo clic...",
+        "description": "Mensaje de registro cuando se encuentra el botón"
+    },
+    "logClicked": {
+        "message": "¡Clic realizado! Esperando animación de puntos...",
+        "description": "Mensaje de registro después de hacer clic"
+    },
+    "logDetectedPoints": {
+        "message": "Puntos detectados: $POINTS$",
+        "description": "Mensaje de registro para puntos detectados",
+        "placeholders": {
+            "points": { "content": "$1" }
+        }
+    },
+    "logPointsAdded": {
+        "message": "+$POINTS$ puntos! (Total: $TOTAL$, Reclamaciones: $CLAIMS$)",
+        "description": "Mensaje de registro cuando se añaden puntos",
+        "placeholders": {
+            "points": { "content": "$1" },
+            "total": { "content": "$2" },
+            "claims": { "content": "$3" }
+        }
+    },
+    "logFallbackPoints": {
+        "message": "No se pudo detectar cantidad de puntos, usando predeterminado (50)",
+        "description": "Mensaje de registro al usar puntos de respaldo"
+    },
+    "logObserverStarted": {
+        "message": "MutationObserver iniciado - observando puntos de bonificación...",
+        "description": "Mensaje de registro cuando el observer inicia"
+    },
+    "logInitialCheck": {
+        "message": "Verificación inicial del botón de reclamar...",
+        "description": "Mensaje de registro para verificación inicial"
+    }
+}
+
