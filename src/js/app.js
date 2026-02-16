@@ -1,7 +1,12 @@
 /**
  * Browser API compatibility wrapper (Chrome/Firefox)
  */
-const browserAPI = typeof browser !== 'undefined' ? browser : chrome;
+if (typeof window.browserAPI === 'undefined') {
+    var browserAPI = typeof browser !== 'undefined' ? browser : chrome;
+    window.browserAPI = browserAPI;
+} else {
+    var browserAPI = window.browserAPI;
+}
 
 /**
  * Debug mode flag (loaded from storage)
