@@ -1,0 +1,115 @@
+{
+    "pointsCollected": {
+        "message": "Gesammelte Punkte",
+        "description": "Label für Gesamtpunkte"
+    },
+    "claims": {
+        "message": "Einlösungen",
+        "description": "Label für Anzahl der Einlösungen"
+    },
+    "averagePerClaim": {
+        "message": "Durchschnitt/Einlösung",
+        "description": "Label für durchschnittliche Punkte pro Einlösung"
+    },
+    "extensionActive": {
+        "message": "Erweiterung aktiv",
+        "description": "Statusmeldung wenn Erweiterung läuft"
+    },
+    "resetStats": {
+        "message": "Statistiken zurücksetzen",
+        "description": "Button-Text zum Zurücksetzen"
+    },
+    "confirmReset": {
+        "message": "Alle Statistiken zurücksetzen?",
+        "description": "Bestätigungsnachricht zum Zurücksetzen"
+    },
+    "confirm": {
+        "message": "Bestätigen",
+        "description": "Bestätigen-Button-Text"
+    },
+    "cancel": {
+        "message": "Abbrechen",
+        "description": "Abbrechen-Button-Text"
+    },
+    "channelStatsTitle": {
+        "message": "Statistiken pro Kanal",
+        "description": "Titel für Kanalstatistiken"
+    },
+    "settingsTitle": {
+        "message": "Einstellungen",
+        "description": "Titel für Einstellungen"
+    },
+    "dangerZone": {
+        "message": "Gefahrenzone",
+        "description": "Abschnittstitel für gefährliche Aktionen"
+    },
+    "noChannelStats": {
+        "message": "Noch keine Kanalstatistiken",
+        "description": "Nachricht wenn keine Kanalstatistiken existieren"
+    },
+    "debugSettings": {
+        "message": "Fehlerbehebung",
+        "description": "Abschnittstitel für Debug-Einstellungen"
+    },
+    "enableDebugLogs": {
+        "message": "Debug-Logs aktivieren",
+        "description": "Label für Debug-Schalter"
+    },
+    "logInitializing": {
+        "message": "Speicher wird initialisiert...",
+        "description": "Log-Nachricht für Speicher-Init"
+    },
+    "logStorageInitialized": {
+        "message": "Speicher initialisiert",
+        "description": "Log-Nachricht wenn Speicher initialisiert ist"
+    },
+    "logStorageLoaded": {
+        "message": "Speicher geladen: Punkte=$POINTS$, Einlösungen=$CLAIMS$",
+        "description": "Log-Nachricht wenn Speicher geladen ist",
+        "placeholders": {
+            "points": { "content": "$1" },
+            "claims": { "content": "$2" }
+        }
+    },
+    "logLoaded": {
+        "message": "AutoTwitchPoints v2.1 geladen!",
+        "description": "Log-Nachricht wenn Erweiterung lädt"
+    },
+    "logFoundClaimButton": {
+        "message": "Einlöse-Button gefunden! Klicke...",
+        "description": "Log-Nachricht wenn Einlöse-Button gefunden"
+    },
+    "logClicked": {
+        "message": "Geklickt! Warte auf Punkte-Animation...",
+        "description": "Log-Nachricht nach dem Klicken"
+    },
+    "logDetectedPoints": {
+        "message": "Erkannte Punkte: $POINTS$",
+        "description": "Log-Nachricht für erkannte Punkte",
+        "placeholders": {
+            "points": { "content": "$1" }
+        }
+    },
+    "logPointsAdded": {
+        "message": "+$POINTS$ Punkte! (Gesamt: $TOTAL$, Einlösungen: $CLAIMS$)",
+        "description": "Log-Nachricht wenn Punkte hinzugefügt werden",
+        "placeholders": {
+            "points": { "content": "$1" },
+            "total": { "content": "$2" },
+            "claims": { "content": "$3" }
+        }
+    },
+    "logFallbackPoints": {
+        "message": "Punkteanzahl nicht erkannt, verwende Standard (50)",
+        "description": "Log-Nachricht bei Fallback-Punkten"
+    },
+    "logObserverStarted": {
+        "message": "MutationObserver gestartet - überwache Bonuspunkte...",
+        "description": "Log-Nachricht wenn Observer startet"
+    },
+    "logInitialCheck": {
+        "message": "Erste Prüfung auf vorhandenen Einlöse-Button...",
+        "description": "Log-Nachricht für erste Prüfung"
+    }
+}
+

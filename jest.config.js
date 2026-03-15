@@ -1,10 +1,10 @@
 module.exports = {
     testEnvironment: 'jsdom',
-    testMatch: ['**/*.test.js'],
+    testMatch: ['**/src/**/*.test.js'],
     verbose: true,
     collectCoverageFrom: [
-        'js/**/*.js',
-        '!js/**/*.test.js'
+        'src/**/*.js',
+        '!src/**/*.test.js'
     ],
     coverageDirectory: 'coverage',
     setupFilesAfterEnv: ['<rootDir>/jest.setup.js']

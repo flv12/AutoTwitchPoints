@@ -4,6 +4,24 @@
 const browserAPI = typeof browser !== 'undefined' ? browser : chrome;
 
 /**
+ * Debug mode flag (loaded from storage)
+ */
+let debugEnabled = false;
+
+// Load debug setting from storage
+browserAPI.storage.sync.get(['debugEnabled'], function(data) {
+    debugEnabled = data?.debugEnabled || false;
+});
+
+// Listen for changes to debug setting
+browserAPI.storage.onChanged.addListener(function(changes, areaName) {
+    if (areaName === 'sync' && changes.debugEnabled) {
+        debugEnabled = changes.debugEnabled.newValue;
+        log(`🔧 Debug mode ${debugEnabled ? 'enabled' : 'disabled'}`);
+    }
+});
+
+/**
  * Resilient selectors for claim button detection
  * Ordered by priority: most reliable first
  */
@@ -36,11 +54,31 @@ function log(message) {
 }
 
 /**
- * Log debug info to console
+ * Log debug info to console (only when debug mode is enabled)
  * @param {string} message
  */
 function logDebug(message) {
-    console.debug(`[AutoTwitchPoints] 🔍 ${message}`);
+    if (debugEnabled) {
+        console.debug(`[AutoTwitchPoints] 🔍 ${message}`);
+    }
+}
+
+/**
+ * Get the current channel name from the URL
+ * @returns {string|null}
+ */
+function getChannelName() {
+    const path = window.location.pathname;
+    // Match /channelname or /channelname/something
+    const match = path.match(/^\/([a-zA-Z0-9_]+)/);
+    if (match && match[1]) {
+        // Exclude Twitch system pages
+        const excludedPaths = ['directory', 'settings', 'subscriptions', 'inventory', 'wallet', 'drops', 'videos', 'following', 'search', 'downloads', 'turbo', 'jobs', 'p', 'user'];
+        if (!excludedPaths.includes(match[1].toLowerCase())) {
+            return match[1].toLowerCase();
+        }
+    }
+    return null;
 }
 
 /**
@@ -129,12 +167,26 @@ function addPoints() {
             const pointsToAdd = parseInt(pointsMatch[1], 10);
             log(`🎁 Detected points: ${pointsToAdd}`);
 
-            browserAPI.storage.sync.get(['points', 'claims'], function(data) {
+            const channelName = getChannelName();
+            browserAPI.storage.sync.get(['points', 'claims', 'channelStats'], function(data) {
                 const currentPoints = data?.points || 0;
                 const currentClaims = data?.claims || 0;
+                const channelStats = data?.channelStats || {};
+
+                // Update channel-specific stats
+                if (channelName) {
+                    if (!channelStats[channelName]) {
+                        channelStats[channelName] = { points: 0, claims: 0 };
+                    }
+                    channelStats[channelName].points += pointsToAdd;
+                    channelStats[channelName].claims += 1;
+                    log(`📺 Channel "${channelName}": +${pointsToAdd} (Total: ${channelStats[channelName].points})`);
+                }
+
                 browserAPI.storage.sync.set({
                     points: currentPoints + pointsToAdd,
-                    claims: currentClaims + 1
+                    claims: currentClaims + 1,
+                    channelStats: channelStats
                 }, function() {
                     log(`✅ +${pointsToAdd} points! (Total: ${currentPoints + pointsToAdd}, Claims: ${currentClaims + 1})`);
                 });
@@ -143,12 +195,26 @@ function addPoints() {
             clearInterval(interval);
             log('⚠️ Could not detect points amount, using default (50)');
             // Fallback: add 50 points (most common value) even if we can't detect the exact amount
-            browserAPI.storage.sync.get(['points', 'claims'], function(data) {
+            const channelName = getChannelName();
+            browserAPI.storage.sync.get(['points', 'claims', 'channelStats'], function(data) {
                 const currentPoints = data?.points || 0;
                 const currentClaims = data?.claims || 0;
+                const channelStats = data?.channelStats || {};
+
+                // Update channel-specific stats
+                if (channelName) {
+                    if (!channelStats[channelName]) {
+                        channelStats[channelName] = { points: 0, claims: 0 };
+                    }
+                    channelStats[channelName].points += 50;
+                    channelStats[channelName].claims += 1;
+                    log(`📺 Channel "${channelName}": +50 fallback (Total: ${channelStats[channelName].points})`);
+                }
+
                 browserAPI.storage.sync.set({
                     points: currentPoints + 50,
-                    claims: currentClaims + 1
+                    claims: currentClaims + 1,
+                    channelStats: channelStats
                 }, function() {
                     log(`✅ +50 points (fallback)! (Total: ${currentPoints + 50}, Claims: ${currentClaims + 1})`);
                 });
@@ -272,7 +338,7 @@ function initObserver() {
  * Start point
  */
 log('━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━');
-log('🎮 AutoTwitchPoints v2.0 loaded!');
+log('🎮 AutoTwitchPoints v2.1 loaded!');
 log('━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━');
 initPoints();
 
@@ -289,6 +355,7 @@ if (typeof module !== 'undefined' && module.exports) {
         logError,
         log,
         logDebug,
+        getChannelName,
         findElementWithFallback,
         initPoints,
         addPoints,

@@ -1,0 +1,115 @@
+{
+    "pointsCollected": {
+        "message": "Собрано очков",
+        "description": "Метка для общего количества очков"
+    },
+    "claims": {
+        "message": "Получений",
+        "description": "Метка для количества получений"
+    },
+    "averagePerClaim": {
+        "message": "Среднее/получение",
+        "description": "Метка для средних очков за получение"
+    },
+    "extensionActive": {
+        "message": "Расширение активно",
+        "description": "Сообщение статуса когда расширение работает"
+    },
+    "resetStats": {
+        "message": "Сбросить статистику",
+        "description": "Текст кнопки сброса"
+    },
+    "confirmReset": {
+        "message": "Сбросить всю статистику?",
+        "description": "Сообщение подтверждения сброса"
+    },
+    "confirm": {
+        "message": "Подтвердить",
+        "description": "Текст кнопки подтверждения"
+    },
+    "cancel": {
+        "message": "Отмена",
+        "description": "Текст кнопки отмены"
+    },
+    "channelStatsTitle": {
+        "message": "Статистика по каналам",
+        "description": "Заголовок для статистики по каналам"
+    },
+    "settingsTitle": {
+        "message": "Настройки",
+        "description": "Заголовок для настроек"
+    },
+    "dangerZone": {
+        "message": "Опасная зона",
+        "description": "Заголовок раздела для опасных действий"
+    },
+    "noChannelStats": {
+        "message": "Пока нет статистики по каналам",
+        "description": "Сообщение когда нет статистики по каналам"
+    },
+    "debugSettings": {
+        "message": "Отладка",
+        "description": "Заголовок раздела для настроек отладки"
+    },
+    "enableDebugLogs": {
+        "message": "Включить отладочные логи",
+        "description": "Метка для переключателя отладки"
+    },
+    "logInitializing": {
+        "message": "Инициализация хранилища...",
+        "description": "Сообщение лога для инициализации хранилища"
+    },
+    "logStorageInitialized": {
+        "message": "Хранилище инициализировано",
+        "description": "Сообщение лога когда хранилище инициализировано"
+    },
+    "logStorageLoaded": {
+        "message": "Хранилище загружено: очки=$POINTS$, получений=$CLAIMS$",
+        "description": "Сообщение лога когда хранилище загружено",
+        "placeholders": {
+            "points": { "content": "$1" },
+            "claims": { "content": "$2" }
+        }
+    },
+    "logLoaded": {
+        "message": "AutoTwitchPoints v2.1 загружен!",
+        "description": "Сообщение лога когда расширение загружается"
+    },
+    "logFoundClaimButton": {
+        "message": "Кнопка получения найдена! Нажимаю...",
+        "description": "Сообщение лога когда кнопка найдена"
+    },
+    "logClicked": {
+        "message": "Нажато! Ожидание анимации очков...",
+        "description": "Сообщение лога после нажатия"
+    },
+    "logDetectedPoints": {
+        "message": "Обнаружено очков: $POINTS$",
+        "description": "Сообщение лога для обнаруженных очков",
+        "placeholders": {
+            "points": { "content": "$1" }
+        }
+    },
+    "logPointsAdded": {
+        "message": "+$POINTS$ очков! (Всего: $TOTAL$, Получений: $CLAIMS$)",
+        "description": "Сообщение лога когда очки добавлены",
+        "placeholders": {
+            "points": { "content": "$1" },
+            "total": { "content": "$2" },
+            "claims": { "content": "$3" }
+        }
+    },
+    "logFallbackPoints": {
+        "message": "Не удалось определить количество очков, используется значение по умолчанию (50)",
+        "description": "Сообщение лога при использовании запасных очков"
+    },
+    "logObserverStarted": {
+        "message": "MutationObserver запущен - отслеживание бонусных очков...",
+        "description": "Сообщение лога когда observer запускается"
+    },
+    "logInitialCheck": {
+        "message": "Начальная проверка кнопки получения...",
+        "description": "Сообщение лога для начальной проверки"
+    }
+}
+

@@ -1,0 +1,494 @@
+<!DOCTYPE html>
+<html lang="fr">
+  <head>
+    <meta charset="utf-8">
+    <title>AutoTwitchPoints</title>
+    <style>
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+
+      body {
+        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        background: linear-gradient(135deg, #9147ff 0%, #772ce8 100%);
+        min-width: 320px;
+        min-height: 280px;
+        padding: 20px;
+        color: white;
+      }
+
+      .header {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        margin-bottom: 16px;
+        padding-bottom: 12px;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+      }
+
+      .header img {
+        width: 32px;
+        height: 32px;
+      }
+
+      .header h1 {
+        font-size: 14px;
+        font-weight: 600;
+      }
+
+      .header-buttons {
+        margin-left: auto;
+        display: flex;
+        gap: 8px;
+      }
+
+      .header-btn {
+        background: rgba(255, 255, 255, 0.15);
+        border: none;
+        border-radius: 6px;
+        width: 32px;
+        height: 32px;
+        cursor: pointer;
+        font-size: 16px;
+        transition: background 0.2s;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      }
+
+      .header-btn:hover {
+        background: rgba(255, 255, 255, 0.25);
+      }
+
+      .back-btn {
+        background: rgba(255, 255, 255, 0.1);
+        border: none;
+        border-radius: 6px;
+        width: 32px;
+        height: 32px;
+        cursor: pointer;
+        font-size: 18px;
+        transition: background 0.2s;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: white;
+      }
+
+      .back-btn:hover {
+        background: rgba(255, 255, 255, 0.2);
+      }
+
+      .view {
+        display: none;
+      }
+
+      .view.active {
+        display: block;
+      }
+
+      .stats-card {
+        background: rgba(255, 255, 255, 0.15);
+        border-radius: 12px;
+        padding: 16px;
+        margin-bottom: 12px;
+        backdrop-filter: blur(10px);
+      }
+
+      .main-stat {
+        text-align: center;
+        margin-bottom: 8px;
+      }
+
+      .main-stat .value {
+        font-size: 36px;
+        font-weight: 700;
+        display: block;
+        text-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+      }
+
+      .main-stat .label {
+        font-size: 12px;
+        opacity: 0.85;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+      }
+
+      .stats-grid {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 10px;
+        margin-top: 12px;
+      }
+
+      .stat-item {
+        background: rgba(255, 255, 255, 0.1);
+        border-radius: 8px;
+        padding: 10px;
+        text-align: center;
+      }
+
+      .stat-item .value {
+        font-size: 18px;
+        font-weight: 600;
+        display: block;
+      }
+
+      .stat-item .label {
+        font-size: 10px;
+        opacity: 0.75;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+      }
+
+      .status {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 6px;
+        font-size: 11px;
+        opacity: 0.85;
+      }
+
+      .status-dot {
+        width: 8px;
+        height: 8px;
+        background: #00f593;
+        border-radius: 50%;
+        animation: pulse 2s infinite;
+      }
+
+      @keyframes pulse {
+        0%, 100% { opacity: 1; }
+        50% { opacity: 0.5; }
+      }
+
+      .emoji {
+        font-size: 24px;
+      }
+
+      /* Channel Stats View */
+      .view-title {
+        font-size: 14px;
+        font-weight: 600;
+        margin-bottom: 12px;
+        text-align: center;
+      }
+
+      .channel-list {
+        max-height: 200px;
+        overflow-y: auto;
+        display: flex;
+        flex-direction: column;
+        gap: 8px;
+      }
+
+      .channel-list::-webkit-scrollbar {
+        width: 6px;
+      }
+
+      .channel-list::-webkit-scrollbar-track {
+        background: rgba(255, 255, 255, 0.1);
+        border-radius: 3px;
+      }
+
+      .channel-list::-webkit-scrollbar-thumb {
+        background: rgba(255, 255, 255, 0.3);
+        border-radius: 3px;
+      }
+
+      .channel-item {
+        background: rgba(255, 255, 255, 0.1);
+        border-radius: 8px;
+        padding: 10px 12px;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+      }
+
+      .channel-info {
+        flex: 1;
+      }
+
+      .channel-name {
+        font-weight: 600;
+        font-size: 13px;
+        margin-bottom: 2px;
+      }
+
+      .channel-stats {
+        font-size: 11px;
+        opacity: 0.8;
+      }
+
+      .channel-points {
+        font-weight: 700;
+        font-size: 14px;
+        color: #00f593;
+      }
+
+      .delete-btn {
+        background: rgba(255, 255, 255, 0.1);
+        border: none;
+        border-radius: 4px;
+        width: 28px;
+        height: 28px;
+        cursor: pointer;
+        font-size: 14px;
+        transition: background 0.2s;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      }
+
+      .delete-btn:hover {
+        background: rgba(233, 25, 22, 0.5);
+      }
+
+      .no-stats {
+        text-align: center;
+        opacity: 0.7;
+        font-size: 12px;
+        padding: 20px;
+      }
+
+      /* Settings View */
+      .settings-section {
+        background: rgba(255, 255, 255, 0.1);
+        border-radius: 8px;
+        padding: 16px;
+        margin-bottom: 12px;
+      }
+
+      .settings-section h3 {
+        font-size: 12px;
+        font-weight: 600;
+        margin-bottom: 12px;
+        opacity: 0.9;
+      }
+
+      .reset-btn {
+        width: 100%;
+        padding: 10px;
+        background: rgba(233, 25, 22, 0.3);
+        border: 1px solid rgba(233, 25, 22, 0.5);
+        border-radius: 6px;
+        color: white;
+        font-size: 12px;
+        cursor: pointer;
+        transition: background 0.2s;
+      }
+
+      .reset-btn:hover {
+        background: rgba(233, 25, 22, 0.5);
+      }
+
+      .confirm-box {
+        display: none;
+        margin-top: 12px;
+        padding: 12px;
+        background: rgba(0, 0, 0, 0.3);
+        border-radius: 8px;
+        text-align: center;
+      }
+
+      .confirm-box.visible {
+        display: block;
+      }
+
+      .confirm-box p {
+        font-size: 12px;
+        margin-bottom: 10px;
+      }
+
+      .confirm-buttons {
+        display: flex;
+        gap: 8px;
+        justify-content: center;
+      }
+
+      .confirm-buttons button {
+        padding: 6px 16px;
+        border-radius: 4px;
+        border: none;
+        font-size: 11px;
+        cursor: pointer;
+        transition: opacity 0.2s;
+      }
+
+      .confirm-buttons button:hover {
+        opacity: 0.85;
+      }
+
+      .btn-confirm {
+        background: #e91916;
+        color: white;
+      }
+
+      .btn-cancel {
+        background: rgba(255, 255, 255, 0.2);
+        color: white;
+      }
+
+      /* Toggle Switch */
+      .setting-row {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 8px 0;
+      }
+
+      .setting-label {
+        font-size: 12px;
+        opacity: 0.9;
+      }
+
+      .toggle-switch {
+        position: relative;
+        width: 44px;
+        height: 24px;
+      }
+
+      .toggle-switch input {
+        opacity: 0;
+        width: 0;
+        height: 0;
+      }
+
+      .toggle-slider {
+        position: absolute;
+        cursor: pointer;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background-color: rgba(255, 255, 255, 0.2);
+        transition: 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        border-radius: 24px;
+      }
+
+      .toggle-slider:before {
+        position: absolute;
+        content: "";
+        height: 18px;
+        width: 18px;
+        left: 3px;
+        bottom: 3px;
+        background-color: white;
+        transition: 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        border-radius: 50%;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+      }
+
+      .toggle-switch input:checked + .toggle-slider {
+        background-color: #00f593;
+      }
+
+      .toggle-switch input:checked + .toggle-slider:before {
+        transform: translateX(20px);
+      }
+
+      .toggle-switch input:focus + .toggle-slider {
+        box-shadow: 0 0 0 2px rgba(255, 255, 255, 0.3);
+      }
+
+      .toggle-switch:active .toggle-slider:before {
+        width: 22px;
+      }
+
+      .toggle-switch input:checked + .toggle-slider:before {
+        transform: translateX(20px);
+      }
+
+      .toggle-switch:active input:checked + .toggle-slider:before {
+        transform: translateX(16px);
+      }
+    </style>
+  </head>
+
+  <body>
+    <!-- HOME VIEW -->
+    <div id="view-home" class="view active">
+      <div class="header">
+        <img src="../../icons/icon-48.png" alt="AutoTwitchPoints">
+        <h1>AutoTwitchPoints</h1>
+        <div class="header-buttons">
+          <button class="header-btn" id="btn-stats" title="Stats" style="display: none;">📊</button>
+          <button class="header-btn" id="btn-settings" title="Settings">⚙️</button>
+        </div>
+      </div>
+
+      <div class="stats-card">
+        <div class="main-stat">
+          <span class="value" id="total-points">0</span>
+          <span class="label"><span data-i18n="pointsCollected">Points collectés</span> <span class="emoji">🎉</span></span>
+        </div>
+
+        <div class="stats-grid">
+          <div class="stat-item">
+            <span class="value" id="claims-count">0</span>
+            <span class="label" data-i18n="claims">Réclamations</span>
+          </div>
+          <div class="stat-item">
+            <span class="value" id="avg-points">0</span>
+            <span class="label" data-i18n="averagePerClaim">Moyenne/claim</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="status">
+        <span class="status-dot"></span>
+        <span data-i18n="extensionActive">Extension active</span>
+      </div>
+    </div>
+
+    <!-- STATS VIEW -->
+    <div id="view-stats" class="view">
+      <div class="header">
+        <button class="back-btn" id="btn-back-stats">←</button>
+        <h1 data-i18n="channelStatsTitle">Stats par chaîne</h1>
+      </div>
+
+      <div class="channel-list" id="channel-list">
+        <!-- Populated by JS -->
+      </div>
+    </div>
+
+    <!-- SETTINGS VIEW -->
+    <div id="view-settings" class="view">
+      <div class="header">
+        <button class="back-btn" id="btn-back-settings">←</button>
+        <h1 data-i18n="settingsTitle">Réglages</h1>
+      </div>
+
+      <div class="settings-section">
+        <h3 data-i18n="debugSettings">Débogage</h3>
+        <div class="setting-row">
+          <span class="setting-label" data-i18n="enableDebugLogs">Activer les logs de debug</span>
+          <label class="toggle-switch">
+            <input type="checkbox" id="debug-toggle">
+            <span class="toggle-slider"></span>
+          </label>
+        </div>
+      </div>
+
+      <div class="settings-section">
+        <h3 data-i18n="dangerZone">Zone de danger</h3>
+        <button class="reset-btn" id="reset-btn" data-i18n="resetStats">Réinitialiser les statistiques</button>
+
+        <div class="confirm-box" id="confirm-box">
+          <p data-i18n="confirmReset">Réinitialiser toutes les statistiques ?</p>
+          <div class="confirm-buttons">
+            <button class="btn-confirm" id="btn-confirm" data-i18n="confirm">Confirmer</button>
+            <button class="btn-cancel" id="btn-cancel" data-i18n="cancel">Annuler</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <script src="popup.js"></script>
+  </body>
+</html>
+

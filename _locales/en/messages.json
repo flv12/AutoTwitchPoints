@@ -31,6 +31,30 @@
         "message": "Cancel",
         "description": "Cancel button text"
     },
+    "channelStatsTitle": {
+        "message": "Stats by channel",
+        "description": "Title for channel stats view"
+    },
+    "settingsTitle": {
+        "message": "Settings",
+        "description": "Title for settings view"
+    },
+    "dangerZone": {
+        "message": "Danger zone",
+        "description": "Section title for dangerous actions"
+    },
+    "noChannelStats": {
+        "message": "No channel statistics yet",
+        "description": "Message when no channel stats exist"
+    },
+    "debugSettings": {
+        "message": "Debug",
+        "description": "Section title for debug settings"
+    },
+    "enableDebugLogs": {
+        "message": "Enable debug logs",
+        "description": "Label for debug toggle"
+    },
     "logInitializing": {
         "message": "Initializing storage...",
         "description": "Log message for storage init"
@@ -48,7 +72,7 @@
         }
     },
     "logLoaded": {
-        "message": "AutoTwitchPoints v2.0 loaded!",
+        "message": "AutoTwitchPoints v2.1 loaded!",
         "description": "Log message when extension loads"
     },
     "logFoundClaimButton": {
