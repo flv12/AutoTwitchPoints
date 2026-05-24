@@ -110,6 +110,46 @@
     "logInitialCheck": {
         "message": "Initial check for existing claim button...",
         "description": "Log message for initial check"
+    },
+    "dataSection": {
+        "message": "Data",
+        "description": "Section title for import/export"
+    },
+    "exportStats": {
+        "message": "Export",
+        "description": "Export statistics button"
+    },
+    "importStats": {
+        "message": "Import",
+        "description": "Import statistics button"
+    },
+    "confirmImport": {
+        "message": "Replace current stats with this file?",
+        "description": "Confirmation message before importing"
+    },
+    "importError": {
+        "message": "Invalid backup file",
+        "description": "Error message when import file is invalid"
+    },
+    "importPageSubtitle": {
+        "message": "Import statistics",
+        "description": "Subtitle on the import page"
+    },
+    "importDropClick": {
+        "message": "Click or drag",
+        "description": "Drop zone call to action"
+    },
+    "importDropHint": {
+        "message": "a .json backup file",
+        "description": "Drop zone file type hint"
+    },
+    "importChannels": {
+        "message": "Channels",
+        "description": "Preview label for channel count"
+    },
+    "importSuccess": {
+        "message": "Statistics imported successfully!",
+        "description": "Success message after import"
     }
 }
 
