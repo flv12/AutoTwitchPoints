@@ -14,7 +14,7 @@
             "js": ["src/js/app.js"]
         }
     ],
-    "permissions": ["storage"],
+    "permissions": ["storage", "windows"],
     "browser_specific_settings": {
         "gecko": {
             "id": "{40539aea-e9a3-4ff1-8ca0-0e2e0187ea42}",

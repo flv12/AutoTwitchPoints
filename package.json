@@ -1,6 +1,6 @@
 {
   "name": "autotwitchpoints",
-  "version": "2.2.0",
+  "version": "2.3.0",
   "description": "Automatically collects Twitch channel points bonus.",
   "main": "index.js",
   "scripts": {

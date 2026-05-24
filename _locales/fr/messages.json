@@ -110,6 +110,46 @@
     "logInitialCheck": {
         "message": "Vérification initiale du bouton de réclamation...",
         "description": "Message de log pour la vérification initiale"
+    },
+    "dataSection": {
+        "message": "Données",
+        "description": "Titre de section pour l'import/export"
+    },
+    "exportStats": {
+        "message": "Exporter",
+        "description": "Bouton d'export des statistiques"
+    },
+    "importStats": {
+        "message": "Importer",
+        "description": "Bouton d'import des statistiques"
+    },
+    "confirmImport": {
+        "message": "Remplacer les stats actuelles par ce fichier ?",
+        "description": "Message de confirmation avant import"
+    },
+    "importError": {
+        "message": "Fichier de sauvegarde invalide",
+        "description": "Message d'erreur si le fichier importé est invalide"
+    },
+    "importPageSubtitle": {
+        "message": "Importer des statistiques",
+        "description": "Sous-titre de la page d'import"
+    },
+    "importDropClick": {
+        "message": "Cliquez ou déposez",
+        "description": "Appel à l'action de la zone de dépôt"
+    },
+    "importDropHint": {
+        "message": "un fichier .json de sauvegarde",
+        "description": "Indication du type de fichier"
+    },
+    "importChannels": {
+        "message": "Chaînes",
+        "description": "Label de prévisualisation pour le nombre de chaînes"
+    },
+    "importSuccess": {
+        "message": "Statistiques importées avec succès !",
+        "description": "Message de succès après import"
     }
 }
 

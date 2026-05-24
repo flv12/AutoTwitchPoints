@@ -1,5 +1,9 @@
 # Changelog
 
+## v2.3
+- Added export: download your statistics as a JSON backup file.
+- Added import: restore statistics from a backup via a dedicated window (drag & drop supported).
+
 ## v2.2
 - Fixed inflated point counts after the computer wakes from sleep while Twitch is open.
 - Fixed periodic "+10" viewing rewards being mistakenly counted as bonus claims.

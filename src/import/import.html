@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <title>AutoTwitchPoints — Import</title>
+    <style>
+      * { margin: 0; padding: 0; box-sizing: border-box; }
+
+      body {
+        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        background: linear-gradient(135deg, #9147ff 0%, #772ce8 100%);
+        min-height: 100vh;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 24px;
+        color: white;
+      }
+
+      body.dev {
+        background: linear-gradient(135deg, #ff6b35 0%, #c4361b 100%);
+      }
+
+      .card {
+        background: rgba(255, 255, 255, 0.15);
+        border-radius: 16px;
+        padding: 24px;
+        width: 100%;
+        max-width: 360px;
+        backdrop-filter: blur(10px);
+      }
+
+      h1 {
+        font-size: 15px;
+        font-weight: 700;
+        margin-bottom: 6px;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+      }
+
+      .subtitle {
+        font-size: 11px;
+        opacity: 0.75;
+        margin-bottom: 20px;
+      }
+
+      .drop-zone {
+        border: 2px dashed rgba(255, 255, 255, 0.4);
+        border-radius: 10px;
+        padding: 28px 20px;
+        text-align: center;
+        cursor: pointer;
+        transition: border-color 0.2s, background 0.2s;
+        margin-bottom: 16px;
+      }
+
+      .drop-zone:hover, .drop-zone.drag-over {
+        border-color: rgba(255, 255, 255, 0.8);
+        background: rgba(255, 255, 255, 0.08);
+      }
+
+      .drop-zone .icon { font-size: 28px; margin-bottom: 8px; }
+
+      .drop-zone p {
+        font-size: 12px;
+        opacity: 0.85;
+        line-height: 1.5;
+      }
+
+      .drop-zone strong { opacity: 1; }
+
+      input[type="file"] { display: none; }
+
+      /* Preview */
+      .preview {
+        display: none;
+        background: rgba(0, 0, 0, 0.25);
+        border-radius: 10px;
+        padding: 14px 16px;
+        margin-bottom: 16px;
+        font-size: 12px;
+        line-height: 1.8;
+      }
+
+      .preview.visible { display: block; }
+
+      .preview-row {
+        display: flex;
+        justify-content: space-between;
+      }
+
+      .preview-row .val {
+        font-weight: 700;
+        color: #00f593;
+      }
+
+      /* Buttons */
+      .btn-row {
+        display: flex;
+        gap: 8px;
+        display: none;
+      }
+
+      .btn-row.visible { display: flex; }
+
+      button {
+        flex: 1;
+        padding: 10px;
+        border: none;
+        border-radius: 8px;
+        font-size: 12px;
+        font-weight: 600;
+        cursor: pointer;
+        transition: opacity 0.2s;
+      }
+
+      button:hover { opacity: 0.85; }
+
+      .btn-confirm { background: #00f593; color: #1a0533; }
+      .btn-cancel  { background: rgba(255, 255, 255, 0.2); color: white; }
+
+      /* Messages */
+      .msg {
+        display: none;
+        margin-top: 14px;
+        padding: 10px 14px;
+        border-radius: 8px;
+        font-size: 12px;
+        text-align: center;
+      }
+
+      .msg.visible { display: block; }
+      .msg.success { background: rgba(0, 245, 147, 0.2); color: #00f593; }
+      .msg.error   { background: rgba(233, 25, 22, 0.25); color: #ff9999; }
+    </style>
+  </head>
+  <body>
+    <div class="card">
+      <h1>🎯 AutoTwitchPoints</h1>
+      <p class="subtitle" id="subtitle">Import statistics</p>
+
+      <div class="drop-zone" id="drop-zone">
+        <div class="icon">📂</div>
+        <p><strong id="lbl-click">Click or drag</strong><br><span id="lbl-json">a .json backup file</span></p>
+        <input type="file" id="import-file" accept=".json">
+      </div>
+
+      <div class="preview" id="preview">
+        <div class="preview-row">
+          <span id="lbl-points">Points</span>
+          <span class="val" id="prev-points">—</span>
+        </div>
+        <div class="preview-row">
+          <span id="lbl-claims">Claims</span>
+          <span class="val" id="prev-claims">—</span>
+        </div>
+        <div class="preview-row">
+          <span id="lbl-channels">Channels</span>
+          <span class="val" id="prev-channels">—</span>
+        </div>
+      </div>
+
+      <div class="btn-row" id="btn-row">
+        <button class="btn-cancel" id="btn-cancel">Cancel</button>
+        <button class="btn-confirm" id="btn-confirm">Import</button>
+      </div>
+
+      <div class="msg" id="msg"></div>
+    </div>
+
+    <script src="import.js"></script>
+  </body>
+</html>

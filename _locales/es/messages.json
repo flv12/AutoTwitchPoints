@@ -110,6 +110,31 @@
     "logInitialCheck": {
         "message": "Verificación inicial del botón de reclamar...",
         "description": "Mensaje de registro para verificación inicial"
-    }
+    },
+    "dataSection": {
+        "message": "Datos",
+        "description": "Título de sección para importar/exportar"
+    },
+    "exportStats": {
+        "message": "Exportar",
+        "description": "Botón para exportar estadísticas"
+    },
+    "importStats": {
+        "message": "Importar",
+        "description": "Botón para importar estadísticas"
+    },
+    "confirmImport": {
+        "message": "¿Reemplazar las estadísticas actuales con este archivo?",
+        "description": "Mensaje de confirmación antes de importar"
+    },
+    "importError": {
+        "message": "Archivo de copia de seguridad inválido",
+        "description": "Mensaje de error si el archivo importado es inválido"
+    },
+    "importPageSubtitle": { "message": "Importar estadísticas" },
+    "importDropClick": { "message": "Clic o arrastrar" },
+    "importDropHint": { "message": "un archivo .json de respaldo" },
+    "importChannels": { "message": "Canales" },
+    "importSuccess": { "message": "¡Estadísticas importadas con éxito!" }
 }
 
