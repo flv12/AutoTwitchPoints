@@ -3,6 +3,13 @@
  */
 const browserAPI = typeof browser !== 'undefined' ? browser : chrome;
 
+// Visual dev-build indicator: scripts/build-manifest.js --dev sets a known
+// gecko id; matching it here flips the popup theme.
+const DEV_GECKO_ID = '{deadbeef-dead-beef-dead-beefdeadbeef}';
+if (browserAPI.runtime.id === DEV_GECKO_ID) {
+    document.body.classList.add('dev');
+}
+
 /**
  * Apply i18n translations to elements with data-i18n attribute
  */

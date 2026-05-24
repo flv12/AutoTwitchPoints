@@ -1,12 +1,15 @@
 {
   "name": "autotwitchpoints",
-  "version": "2.1.1",
+  "version": "2.2.0",
   "description": "Automatically collects Twitch channel points bonus.",
   "main": "index.js",
   "scripts": {
     "test": "jest",
     "test:watch": "jest --watch",
-    "test:coverage": "jest --coverage"
+    "test:coverage": "jest --coverage",
+    "build:manifest": "node scripts/build-manifest.js",
+    "build:manifest:dev": "node scripts/build-manifest.js --dev",
+    "package": "npm run build:manifest && rm -f ../autotwitchpoints.zip && zip -r -FS ../autotwitchpoints.zip manifest.json icons/ src/ _locales/ -x '*.test.js'"
   },
   "repository": {
     "type": "git",

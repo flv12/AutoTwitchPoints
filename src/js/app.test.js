@@ -12,22 +12,31 @@ const {
     logDebug,
     findElementWithFallback,
     initPoints,
-    addPoints,
     tryClaimPoints,
+    verifyAndCreditClaim,
+    snapshotPointsDisplay,
+    isStuck,
+    stuckState,
     CLAIM_BUTTON_SELECTORS,
     POINTS_DISPLAY_SELECTORS
 } = require('./app.js');
 
+function addPointsAnimation(text) {
+    const el = document.createElement('div');
+    el.className = 'community-points-summary__points';
+    el.textContent = text;
+    document.body.appendChild(el);
+    return el;
+}
+
 describe('AutoTwitchPoints', () => {
 
     beforeEach(() => {
-        // Reset DOM
         document.body.innerHTML = '';
-        // Reset mock storage
         global.resetMockStorage();
-        // Clear all mocks
         jest.clearAllMocks();
         jest.useRealTimers();
+        stuckState.until = 0;
     });
 
     describe('Logging functions', () => {
@@ -41,15 +50,8 @@ describe('AutoTwitchPoints', () => {
             expect(console.error).toHaveBeenCalledWith('[AutoTwitchPoints] ❌ Error: test error');
         });
 
-        test('logDebug() should output debug message with prefix when debug enabled', () => {
-            // Enable debug mode in storage
-            global.setMockStorageData({ debugEnabled: true });
-            // Manually set the debugEnabled flag (since storage.get is async in real code)
-            // For tests, we need to directly test the function behavior
-            // logDebug only outputs when debugEnabled is true, which is loaded asynchronously
-            // So we test that it doesn't output when disabled
+        test('logDebug() should not output when debug disabled', () => {
             logDebug('debug message');
-            // Debug is disabled by default in tests, so no output expected
             expect(console.debug).not.toHaveBeenCalled();
         });
     });
@@ -71,9 +73,7 @@ describe('AutoTwitchPoints', () => {
         });
 
         test('should use fallback selector when primary fails', () => {
-            document.body.innerHTML = `
-                <div class="fallback-element">Fallback</div>
-            `;
+            document.body.innerHTML = `<div class="fallback-element">Fallback</div>`;
             const result = findElementWithFallback([
                 '.non-existent-primary',
                 '.fallback-element'
@@ -95,10 +95,7 @@ describe('AutoTwitchPoints', () => {
     describe('initPoints()', () => {
         test('should initialize storage with default values when empty', (done) => {
             global.setMockStorageData({});
-
             initPoints();
-
-            // Wait for async callback
             setTimeout(() => {
                 expect(global.chrome.storage.sync.get).toHaveBeenCalled();
                 expect(global.chrome.storage.sync.set).toHaveBeenCalledWith(
@@ -110,22 +107,17 @@ describe('AutoTwitchPoints', () => {
 
         test('should not overwrite existing storage values', (done) => {
             global.setMockStorageData({ points: 100, claims: 5 });
-
             initPoints();
-
             setTimeout(() => {
                 expect(global.chrome.storage.sync.get).toHaveBeenCalled();
-                // set should not be called because values already exist
                 expect(global.chrome.storage.sync.set).not.toHaveBeenCalled();
                 done();
             }, 10);
         });
 
         test('should initialize only missing values', (done) => {
-            global.setMockStorageData({ points: 100 }); // claims is missing
-
+            global.setMockStorageData({ points: 100 });
             initPoints();
-
             setTimeout(() => {
                 expect(global.chrome.storage.sync.set).toHaveBeenCalledWith(
                     expect.objectContaining({ claims: 0 })
@@ -135,28 +127,34 @@ describe('AutoTwitchPoints', () => {
         });
     });
 
-    describe('tryClaimPoints()', () => {
-        test('should return false when no claim button exists', () => {
-            document.body.innerHTML = '<div>No button here</div>';
-            const result = tryClaimPoints();
-            expect(result).toBe(false);
+    describe('snapshotPointsDisplay()', () => {
+        test('returns empty string when no points element exists', () => {
+            expect(snapshotPointsDisplay()).toBe('');
         });
 
-        test('should click claim button and return true when found', () => {
+        test('returns trimmed textContent of the points element', () => {
+            addPointsAnimation('  +10  ');
+            expect(snapshotPointsDisplay()).toBe('+10');
+        });
+    });
+
+    describe('tryClaimPoints()', () => {
+        test('returns false when no claim button exists', () => {
+            document.body.innerHTML = '<div>No button here</div>';
+            expect(tryClaimPoints()).toBe(false);
+        });
+
+        test('clicks claim button and returns true when found', () => {
             const clickMock = jest.fn();
-            document.body.innerHTML = `
-                <button class="claimable-bonus-button">Claim Points</button>
-            `;
+            document.body.innerHTML = `<button class="claimable-bonus-button">Claim</button>`;
             const button = document.querySelector('button');
             button.click = clickMock;
 
-            const result = tryClaimPoints();
-
-            expect(result).toBe(true);
+            expect(tryClaimPoints()).toBe(true);
             expect(clickMock).toHaveBeenCalled();
         });
 
-        test('should find parent button when inner element matches', () => {
+        test('finds parent button when inner element matches', () => {
             const clickMock = jest.fn();
             document.body.innerHTML = `
                 <button class="outer-button">
@@ -166,33 +164,29 @@ describe('AutoTwitchPoints', () => {
             const button = document.querySelector('button');
             button.click = clickMock;
 
-            const result = tryClaimPoints();
-
-            expect(result).toBe(true);
+            expect(tryClaimPoints()).toBe(true);
             expect(clickMock).toHaveBeenCalled();
         });
     });
 
-    describe('addPoints()', () => {
-        beforeEach(() => {
-            jest.useFakeTimers();
-        });
+    describe('verifyAndCreditClaim()', () => {
+        beforeEach(() => { jest.useFakeTimers(); });
+        afterEach(() => { jest.useRealTimers(); });
 
-        afterEach(() => {
-            jest.useRealTimers();
-        });
+        function setupButton() {
+            const button = document.createElement('button');
+            button.className = 'claimable-bonus-button';
+            document.body.appendChild(button);
+            return button;
+        }
 
-        test('should detect and add points when "+50" is displayed', () => {
+        test('credits points when a new "+50" animation appears', () => {
             global.setMockStorageData({ points: 100, claims: 2 });
+            const button = setupButton();
 
-            document.body.innerHTML = `
-                <div class="community-points-summary__points">+50</div>
-            `;
-
-            addPoints();
-
-            // Advance timers to trigger the interval
-            jest.advanceTimersByTime(500);
+            verifyAndCreditClaim(button, '');
+            addPointsAnimation('+50');
+            jest.advanceTimersByTime(250);
 
             expect(global.chrome.storage.sync.set).toHaveBeenCalledWith(
                 { points: 150, claims: 3, channelStats: {} },
@@ -200,15 +194,13 @@ describe('AutoTwitchPoints', () => {
             );
         });
 
-        test('should detect points with different amounts (+100)', () => {
+        test('credits different amounts (+100)', () => {
             global.setMockStorageData({ points: 200, claims: 5 });
+            const button = setupButton();
 
-            document.body.innerHTML = `
-                <div class="community-points-summary__points">+100</div>
-            `;
-
-            addPoints();
-            jest.advanceTimersByTime(500);
+            verifyAndCreditClaim(button, '');
+            addPointsAnimation('+100');
+            jest.advanceTimersByTime(250);
 
             expect(global.chrome.storage.sync.set).toHaveBeenCalledWith(
                 { points: 300, claims: 6, channelStats: {} },
@@ -216,15 +208,13 @@ describe('AutoTwitchPoints', () => {
             );
         });
 
-        test('should handle points with non-breaking spaces', () => {
+        test('handles non-breaking spaces in animation text', () => {
             global.setMockStorageData({ points: 0, claims: 0 });
+            const button = setupButton();
 
-            document.body.innerHTML = `
-                <div class="community-points-summary__points">+\u00A050</div>
-            `;
-
-            addPoints();
-            jest.advanceTimersByTime(500);
+            verifyAndCreditClaim(button, '');
+            addPointsAnimation('+ 50');
+            jest.advanceTimersByTime(250);
 
             expect(global.chrome.storage.sync.set).toHaveBeenCalledWith(
                 { points: 50, claims: 1, channelStats: {} },
@@ -232,35 +222,52 @@ describe('AutoTwitchPoints', () => {
             );
         });
 
-        test('should use fallback (50 points) after max attempts', () => {
+        test('ignores animation matching snapshot (viewing reward already on screen)', () => {
             global.setMockStorageData({ points: 100, claims: 2 });
+            // +10 viewing reward already visible at click time
+            addPointsAnimation('+10');
+            const button = setupButton();
+            button.remove(); // Twitch removes the button on a real claim
 
-            // No points element in DOM
-            document.body.innerHTML = '<div>No points here</div>';
+            verifyAndCreditClaim(button, '+10');
+            jest.advanceTimersByTime(3000);
 
-            addPoints();
-
-            // Advance through all 10 attempts (500ms each)
-            jest.advanceTimersByTime(5000);
-
-            expect(global.chrome.storage.sync.set).toHaveBeenCalledWith(
-                { points: 150, claims: 3, channelStats: {} },
-                expect.any(Function)
-            );
+            expect(global.chrome.storage.sync.set).not.toHaveBeenCalled();
         });
 
-        test('should not add points if element exists but no "+" sign', () => {
+        test('does NOT credit a fallback +50 when no animation appears', () => {
             global.setMockStorageData({ points: 100, claims: 2 });
+            const button = setupButton();
+            button.remove(); // click registered (button gone) but no animation
 
-            // Element shows current balance, not points gained
-            document.body.innerHTML = `
-                <div class="community-points-summary__points">5000</div>
-            `;
+            verifyAndCreditClaim(button, '');
+            jest.advanceTimersByTime(3000);
 
-            addPoints();
-            jest.advanceTimersByTime(500);
+            expect(global.chrome.storage.sync.set).not.toHaveBeenCalled();
+            expect(isStuck()).toBe(false);
+        });
 
-            // Should not have been called yet (waiting for + sign)
+        test('marks stuck when button remains in DOM after timeout', () => {
+            const button = setupButton();
+
+            verifyAndCreditClaim(button, '');
+            expect(isStuck()).toBe(false);
+
+            jest.advanceTimersByTime(3000);
+
+            expect(isStuck()).toBe(true);
+            expect(global.chrome.storage.sync.set).not.toHaveBeenCalled();
+        });
+
+        test('does not match an element without "+" sign (current balance)', () => {
+            global.setMockStorageData({ points: 100, claims: 2 });
+            const button = setupButton();
+            button.remove();
+            addPointsAnimation('5000');
+
+            verifyAndCreditClaim(button, '');
+            jest.advanceTimersByTime(3000);
+
             expect(global.chrome.storage.sync.set).not.toHaveBeenCalled();
         });
     });
@@ -276,62 +283,68 @@ describe('AutoTwitchPoints', () => {
     });
 
     describe('Integration scenarios', () => {
-        beforeEach(() => {
-            jest.useFakeTimers();
-        });
+        beforeEach(() => { jest.useFakeTimers(); });
+        afterEach(() => { jest.useRealTimers(); });
 
-        afterEach(() => {
-            jest.useRealTimers();
-        });
-
-        test('should handle complete claim flow', () => {
+        test('successful claim: button disappears AND new animation appears', () => {
             global.setMockStorageData({ points: 500, claims: 10 });
-
-            // Setup: claim button exists
-            document.body.innerHTML = `
-                <button class="claimable-bonus-button">Claim</button>
-            `;
-
+            document.body.innerHTML = `<button class="claimable-bonus-button">Claim</button>`;
             const button = document.querySelector('button');
-            const originalClick = button.click.bind(button);
             button.click = jest.fn(() => {
-                // Simulate: after click, points animation appears
-                document.body.innerHTML += `
-                    <div class="community-points-summary__points">+50</div>
-                `;
-                originalClick();
+                // Real Twitch: button removed, animation appears
+                button.remove();
+                addPointsAnimation('+50');
             });
 
-            // Execute claim
-            const claimed = tryClaimPoints();
-
-            expect(claimed).toBe(true);
+            expect(tryClaimPoints()).toBe(true);
             expect(button.click).toHaveBeenCalled();
 
-            // Wait for points detection
-            jest.advanceTimersByTime(500);
+            jest.advanceTimersByTime(250);
 
             expect(global.chrome.storage.sync.set).toHaveBeenCalledWith(
                 { points: 550, claims: 11, channelStats: {} },
                 expect.any(Function)
             );
+            expect(isStuck()).toBe(false);
+        });
+
+        test('stuck-button scenario (post PC sleep): no credit, stuck cooldown set', () => {
+            global.setMockStorageData({ points: 500, claims: 10 });
+            document.body.innerHTML = `<button class="claimable-bonus-button">Claim</button>`;
+            const button = document.querySelector('button');
+            button.click = jest.fn(); // click no-ops, button stays, no animation
+
+            expect(tryClaimPoints()).toBe(true);
+            jest.advanceTimersByTime(3000);
+
+            expect(global.chrome.storage.sync.set).not.toHaveBeenCalled();
+            expect(isStuck()).toBe(true);
+        });
+
+        test('viewing-reward already on screen at click time is not double-counted', () => {
+            global.setMockStorageData({ points: 500, claims: 10 });
+            addPointsAnimation('+10'); // viewing reward already visible
+            document.body.innerHTML += `<button class="claimable-bonus-button">Claim</button>`;
+            const button = document.querySelector('button');
+            button.click = jest.fn(() => {
+                // Click no-ops on the stuck button; +10 stays as-is
+            });
+
+            expect(tryClaimPoints()).toBe(true);
+            jest.advanceTimersByTime(3000);
+
+            // +10 was the snapshot, so unchanged text must not credit
+            expect(global.chrome.storage.sync.set).not.toHaveBeenCalled();
         });
     });
 
     describe('i18n API', () => {
-        test('browserAPI.i18n.getMessage should return translation for known key', () => {
-            const translation = global.browserAPI.i18n.getMessage('pointsCollected');
-            expect(translation).toBe('Points collected');
+        test('returns translation for known key', () => {
+            expect(global.browserAPI.i18n.getMessage('pointsCollected')).toBe('Points collected');
         });
 
-        test('browserAPI.i18n.getMessage should return key for unknown key', () => {
-            const translation = global.browserAPI.i18n.getMessage('unknownKey');
-            expect(translation).toBe('unknownKey');
-        });
-
-        test('browserAPI.i18n.getMessage should be callable', () => {
-            expect(typeof global.browserAPI.i18n.getMessage).toBe('function');
+        test('returns key for unknown key', () => {
+            expect(global.browserAPI.i18n.getMessage('unknownKey')).toBe('unknownKey');
         });
     });
 });
-
