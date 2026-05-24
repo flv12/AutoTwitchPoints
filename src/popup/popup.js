@@ -3,6 +3,13 @@
  */
 const browserAPI = typeof browser !== 'undefined' ? browser : chrome;
 
+// Visual dev-build indicator: scripts/build-manifest.js --dev sets a known
+// gecko id; matching it here flips the popup theme.
+const DEV_GECKO_ID = '{deadbeef-dead-beef-dead-beefdeadbeef}';
+if (browserAPI.runtime.id === DEV_GECKO_ID) {
+    document.body.classList.add('dev');
+}
+
 /**
  * Apply i18n translations to elements with data-i18n attribute
  */
@@ -155,6 +162,38 @@ function resetStats() {
 }
 
 /**
+ * Export stats as a JSON file download
+ */
+function exportStats() {
+    browserAPI.storage.sync.get(['points', 'claims', 'channelStats'], function(data) {
+        const payload = {
+            points: data.points || 0,
+            claims: data.claims || 0,
+            channelStats: data.channelStats || {}
+        };
+        const blob = new Blob([JSON.stringify(payload, null, 2)], { type: 'application/json' });
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = `autotwitchpoints-${new Date().toISOString().slice(0, 10)}.json`;
+        a.click();
+        URL.revokeObjectURL(url);
+    });
+}
+
+/**
+ * Open the dedicated import page in a small popup window
+ */
+function openImportWindow() {
+    browserAPI.windows.create({
+        url: browserAPI.runtime.getURL('src/import/import.html'),
+        type: 'popup',
+        width: 420,
+        height: 340
+    });
+}
+
+/**
  * Load debug setting and update toggle
  */
 function loadDebugSetting() {
@@ -192,4 +231,8 @@ document.getElementById('btn-cancel').addEventListener('click', hideConfirm);
 document.getElementById('debug-toggle').addEventListener('change', function() {
     saveDebugSetting(this.checked);
 });
+
+// Import / Export event listeners
+document.getElementById('export-btn').addEventListener('click', exportStats);
+document.getElementById('import-btn').addEventListener('click', openImportWindow);
 

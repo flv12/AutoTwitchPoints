@@ -38,6 +38,13 @@ const POINTS_DISPLAY_SELECTORS = [
 ];
 
 /**
+ * Selectors for the community points container (to scope the observer)
+ */
+const POINTS_CONTAINER_SELECTORS = [
+    '[class*="community-points-summary"]'
+];
+
+/**
  * Log error to console
  * @param {*} error
  */
@@ -69,10 +76,8 @@ function logDebug(message) {
  */
 function getChannelName() {
     const path = window.location.pathname;
-    // Match /channelname or /channelname/something
     const match = path.match(/^\/([a-zA-Z0-9_]+)/);
     if (match && match[1]) {
-        // Exclude Twitch system pages
         const excludedPaths = ['directory', 'settings', 'subscriptions', 'inventory', 'wallet', 'drops', 'videos', 'following', 'search', 'downloads', 'turbo', 'jobs', 'p', 'user'];
         if (!excludedPaths.includes(match[1].toLowerCase())) {
             return match[1].toLowerCase();
@@ -129,98 +134,102 @@ function initPoints() {
 }
 
 /**
- * Get the actual amount of points and adds them to storage
+ * Verification window after a click. Beyond this delay, if the claim button
+ * is still in the DOM, we treat the click as failed (Twitch UI stuck after
+ * PC sleep) and pause future attempts for STUCK_COOLDOWN_MS to stop the
+ * runaway loop that used to fabricate a +50 every 5s.
  */
-function addPoints() {
-    let attempts = 0;
-    const maxAttempts = 10;
-    logDebug('Starting points detection...');
+const VERIFY_TIMEOUT_MS = 3000;
+const VERIFY_INTERVAL_MS = 250;
+const STUCK_COOLDOWN_MS = 60_000;
+
+const stuckState = { until: 0 };
+
+function isStuck() {
+    return Date.now() < stuckState.until;
+}
+
+/**
+ * Capture the current points display text. Used as a baseline so a periodic
+ * viewing-reward (+10) already on screen at click time isn't credited as a
+ * claim.
+ */
+function snapshotPointsDisplay() {
+    const el = findElementWithFallback(POINTS_DISPLAY_SELECTORS);
+    return el?.textContent?.trim() ?? '';
+}
+
+function creditPoints(pointsToAdd) {
+    const channelName = getChannelName();
+    browserAPI.storage.sync.get(['points', 'claims', 'channelStats'], function(data) {
+        const currentPoints = data?.points || 0;
+        const currentClaims = data?.claims || 0;
+        const channelStats = data?.channelStats || {};
+
+        if (channelName) {
+            if (!channelStats[channelName]) {
+                channelStats[channelName] = { points: 0, claims: 0 };
+            }
+            channelStats[channelName].points += pointsToAdd;
+            channelStats[channelName].claims += 1;
+            log(`📺 Channel "${channelName}": +${pointsToAdd} (Total: ${channelStats[channelName].points})`);
+        }
+
+        browserAPI.storage.sync.set({
+            points: currentPoints + pointsToAdd,
+            claims: currentClaims + 1,
+            channelStats: channelStats
+        }, function() {
+            log(`✅ +${pointsToAdd} points! (Total: ${currentPoints + pointsToAdd}, Claims: ${currentClaims + 1})`);
+        });
+    });
+}
+
+/**
+ * After a click, poll for a fresh "+N" animation (text different from the
+ * pre-click snapshot). Only credits on a confirmed new animation — never
+ * fabricates a fallback. If the claim button is still present when the
+ * verification window elapses, mark the script stuck so the observer pauses.
+ */
+function verifyAndCreditClaim(claimButton, snapshotText) {
+    let elapsed = 0;
+    let buttonGone = !document.body.contains(claimButton);
+    logDebug(`Verifying claim (snapshot: "${snapshotText}", buttonGone: ${buttonGone})`);
 
     const interval = setInterval(function() {
-        attempts++;
-        logDebug(`Attempt ${attempts}/${maxAttempts} to detect points...`);
+        elapsed += VERIFY_INTERVAL_MS;
 
-        // Try to find the points animation element
-        const ptsElement = findElementWithFallback(POINTS_DISPLAY_SELECTORS);
-        let ptsWon = ptsElement?.textContent?.trim();
-
-        if (ptsElement) {
-            logDebug(`Found points element, textContent: "${ptsWon}"`);
-            logDebug(`Raw char codes: ${[...ptsWon].map(c => c.charCodeAt(0)).join(',')}`);
+        if (!buttonGone && !document.body.contains(claimButton)) {
+            buttonGone = true;
+            logDebug('Claim button removed from DOM');
         }
 
-        // Only accept if it contains a "+" sign (indicates points gained, not current balance)
-        if (ptsWon && ptsWon.includes('+')) {
-            clearInterval(interval);
+        const ptsElement = findElementWithFallback(POINTS_DISPLAY_SELECTORS);
+        const text = ptsElement?.textContent?.trim() ?? '';
 
-            // Normalize: replace &nbsp; (\u00A0) and other whitespace, then extract number
-            const normalizedText = ptsWon.replace(/[\s\u00A0]+/g, '');
-            logDebug(`Normalized text: "${normalizedText}"`);
-
-            // Extract number from text (handles "+50", "+100", etc.)
-            const pointsMatch = normalizedText.match(/\+(\d+)/);
-            if (!pointsMatch) {
-                logDebug(`Could not extract number from: "${ptsWon}" (normalized: "${normalizedText}")`);
+        if (text !== snapshotText && text.includes('+')) {
+            const normalized = text.replace(/[\s ]+/g, '');
+            const match = normalized.match(/\+(\d+)/);
+            if (match) {
+                clearInterval(interval);
+                const pointsToAdd = parseInt(match[1], 10);
+                log(`🎁 Detected points: ${pointsToAdd}`);
+                creditPoints(pointsToAdd);
                 return;
             }
-
-            const pointsToAdd = parseInt(pointsMatch[1], 10);
-            log(`🎁 Detected points: ${pointsToAdd}`);
-
-            const channelName = getChannelName();
-            browserAPI.storage.sync.get(['points', 'claims', 'channelStats'], function(data) {
-                const currentPoints = data?.points || 0;
-                const currentClaims = data?.claims || 0;
-                const channelStats = data?.channelStats || {};
-
-                // Update channel-specific stats
-                if (channelName) {
-                    if (!channelStats[channelName]) {
-                        channelStats[channelName] = { points: 0, claims: 0 };
-                    }
-                    channelStats[channelName].points += pointsToAdd;
-                    channelStats[channelName].claims += 1;
-                    log(`📺 Channel "${channelName}": +${pointsToAdd} (Total: ${channelStats[channelName].points})`);
-                }
-
-                browserAPI.storage.sync.set({
-                    points: currentPoints + pointsToAdd,
-                    claims: currentClaims + 1,
-                    channelStats: channelStats
-                }, function() {
-                    log(`✅ +${pointsToAdd} points! (Total: ${currentPoints + pointsToAdd}, Claims: ${currentClaims + 1})`);
-                });
-            });
-        } else if (attempts >= maxAttempts) {
-            clearInterval(interval);
-            log('⚠️ Could not detect points amount, using default (50)');
-            // Fallback: add 50 points (most common value) even if we can't detect the exact amount
-            const channelName = getChannelName();
-            browserAPI.storage.sync.get(['points', 'claims', 'channelStats'], function(data) {
-                const currentPoints = data?.points || 0;
-                const currentClaims = data?.claims || 0;
-                const channelStats = data?.channelStats || {};
-
-                // Update channel-specific stats
-                if (channelName) {
-                    if (!channelStats[channelName]) {
-                        channelStats[channelName] = { points: 0, claims: 0 };
-                    }
-                    channelStats[channelName].points += 50;
-                    channelStats[channelName].claims += 1;
-                    log(`📺 Channel "${channelName}": +50 fallback (Total: ${channelStats[channelName].points})`);
-                }
-
-                browserAPI.storage.sync.set({
-                    points: currentPoints + 50,
-                    claims: currentClaims + 1,
-                    channelStats: channelStats
-                }, function() {
-                    log(`✅ +50 points (fallback)! (Total: ${currentPoints + 50}, Claims: ${currentClaims + 1})`);
-                });
-            });
+            logDebug(`Could not extract number from: "${text}"`);
         }
-    }, 500);
+
+        if (elapsed >= VERIFY_TIMEOUT_MS) {
+            clearInterval(interval);
+            if (!buttonGone) {
+                stuckState.until = Date.now() + STUCK_COOLDOWN_MS;
+                log(`⚠️ Claim button still visible after ${VERIFY_TIMEOUT_MS}ms — likely stuck. Pausing ${STUCK_COOLDOWN_MS / 1000}s.`);
+            } else {
+                log('⚠️ Click registered but no points animation detected — not crediting.');
+            }
+        }
+    }, VERIFY_INTERVAL_MS);
 }
 
 /**
@@ -231,32 +240,24 @@ function tryClaimPoints() {
     logDebug('Searching for claim button...');
     let claimButton = findElementWithFallback(CLAIM_BUTTON_SELECTORS);
 
-    if (claimButton) {
-        // If we found an element that's not a button, find the closest button parent
-        if (claimButton.tagName !== 'BUTTON') {
-            const parentButton = claimButton.closest('button');
-            if (parentButton) {
-                logDebug(`Found inner element, using parent button instead`);
-                claimButton = parentButton;
-            }
+    if (!claimButton) return false;
+
+    if (claimButton.tagName !== 'BUTTON') {
+        const parentButton = claimButton.closest('button');
+        if (parentButton) {
+            logDebug('Found inner element, using parent button instead');
+            claimButton = parentButton;
         }
-
-        log(`🎯 Found claim button! Clicking...`);
-        logDebug(`Button element: ${claimButton.tagName}.${claimButton.className}`);
-        claimButton.click();
-        log('🖱️ Clicked! Waiting for points animation...');
-        addPoints();
-        return true;
     }
-    return false;
-}
 
-/**
- * Selectors for the community points container (to scope the observer)
- */
-const POINTS_CONTAINER_SELECTORS = [
-    '[class*="community-points-summary"]'
-];
+    const snapshotText = snapshotPointsDisplay();
+    log(`🎯 Found claim button! Clicking...`);
+    logDebug(`Button element: ${claimButton.tagName}.${claimButton.className}, snapshot: "${snapshotText}"`);
+    claimButton.click();
+    log('🖱️ Clicked! Verifying...');
+    verifyAndCreditClaim(claimButton, snapshotText);
+    return true;
+}
 
 /**
  * Initialize MutationObserver to detect claim button appearance
@@ -269,6 +270,10 @@ function initObserver() {
 
     const checkForClaimButton = function() {
         const now = Date.now();
+        if (isStuck()) {
+            logDebug(`Stuck cooldown active, skipping (${Math.round((stuckState.until - now) / 1000)}s left)`);
+            return;
+        }
         if (now - lastClaimTime < CLAIM_COOLDOWN) {
             logDebug(`Cooldown active, skipping (${Math.round((CLAIM_COOLDOWN - (now - lastClaimTime)) / 1000)}s left)`);
             return;
@@ -280,7 +285,6 @@ function initObserver() {
     };
 
     const observer = new MutationObserver(function(mutations) {
-        // Only react to relevant mutations (added nodes)
         const hasRelevantMutation = mutations.some(mutation =>
             mutation.addedNodes.length > 0 ||
             mutation.type === 'attributes'
@@ -288,12 +292,10 @@ function initObserver() {
 
         if (!hasRelevantMutation) return;
 
-        // Debounce mutations
         if (debounceTimer) clearTimeout(debounceTimer);
         debounceTimer = setTimeout(checkForClaimButton, 250);
     });
 
-    // Try to find a more specific container to observe
     const findAndObserve = function() {
         let targetNode = null;
 
@@ -305,7 +307,6 @@ function initObserver() {
             }
         }
 
-        // Fallback to body if no specific container found
         if (!targetNode) {
             targetNode = document.body;
             log('📍 Observing document.body (no specific container found)');
@@ -321,10 +322,8 @@ function initObserver() {
         log('👀 MutationObserver started - watching for bonus points...');
     };
 
-    // Initial setup
     findAndObserve();
 
-    // Initial check after 2s (only once)
     setTimeout(function() {
         if (!initialCheckDone) {
             initialCheckDone = true;
@@ -342,7 +341,6 @@ log('🎮 AutoTwitchPoints v2.1 loaded!');
 log('━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━');
 initPoints();
 
-// Wait for page to be ready before starting observer
 if (document.readyState === 'loading') {
     document.addEventListener('DOMContentLoaded', initObserver);
 } else {
@@ -358,8 +356,12 @@ if (typeof module !== 'undefined' && module.exports) {
         getChannelName,
         findElementWithFallback,
         initPoints,
-        addPoints,
         tryClaimPoints,
+        verifyAndCreditClaim,
+        snapshotPointsDisplay,
+        creditPoints,
+        isStuck,
+        stuckState,
         initObserver,
         CLAIM_BUTTON_SELECTORS,
         POINTS_DISPLAY_SELECTORS,

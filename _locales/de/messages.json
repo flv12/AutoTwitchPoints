@@ -110,6 +110,31 @@
     "logInitialCheck": {
         "message": "Erste Prüfung auf vorhandenen Einlöse-Button...",
         "description": "Log-Nachricht für erste Prüfung"
-    }
+    },
+    "dataSection": {
+        "message": "Daten",
+        "description": "Abschnittstitel für Import/Export"
+    },
+    "exportStats": {
+        "message": "Exportieren",
+        "description": "Statistiken exportieren"
+    },
+    "importStats": {
+        "message": "Importieren",
+        "description": "Statistiken importieren"
+    },
+    "confirmImport": {
+        "message": "Aktuelle Statistiken durch diese Datei ersetzen?",
+        "description": "Bestätigungsnachricht vor dem Import"
+    },
+    "importError": {
+        "message": "Ungültige Sicherungsdatei",
+        "description": "Fehlermeldung bei ungültiger Importdatei"
+    },
+    "importPageSubtitle": { "message": "Statistiken importieren" },
+    "importDropClick": { "message": "Klicken oder ablegen" },
+    "importDropHint": { "message": "eine .json-Sicherungsdatei" },
+    "importChannels": { "message": "Kanäle" },
+    "importSuccess": { "message": "Statistiken erfolgreich importiert!" }
 }
 

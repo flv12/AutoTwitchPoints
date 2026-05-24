@@ -110,6 +110,31 @@
     "logInitialCheck": {
         "message": "Начальная проверка кнопки получения...",
         "description": "Сообщение лога для начальной проверки"
-    }
+    },
+    "dataSection": {
+        "message": "Данные",
+        "description": "Заголовок раздела импорта/экспорта"
+    },
+    "exportStats": {
+        "message": "Экспорт",
+        "description": "Кнопка экспорта статистики"
+    },
+    "importStats": {
+        "message": "Импорт",
+        "description": "Кнопка импорта статистики"
+    },
+    "confirmImport": {
+        "message": "Заменить текущую статистику этим файлом?",
+        "description": "Сообщение подтверждения перед импортом"
+    },
+    "importError": {
+        "message": "Неверный файл резервной копии",
+        "description": "Сообщение об ошибке при неверном файле импорта"
+    },
+    "importPageSubtitle": { "message": "Импорт статистики" },
+    "importDropClick": { "message": "Нажмите или перетащите" },
+    "importDropHint": { "message": "файл .json резервной копии" },
+    "importChannels": { "message": "Каналы" },
+    "importSuccess": { "message": "Статистика успешно импортирована!" }
 }
 

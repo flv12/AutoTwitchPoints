@@ -13,10 +13,14 @@
       body {
         font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
         background: linear-gradient(135deg, #9147ff 0%, #772ce8 100%);
-        min-width: 320px;
-        min-height: 280px;
+        min-width: 340px;
+        min-height: 320px;
         padding: 20px;
         color: white;
+      }
+
+      body.dev {
+        background: linear-gradient(135deg, #ff6b35 0%, #c4361b 100%);
       }
 
       .header {
@@ -405,6 +409,35 @@
       .toggle-switch:active input:checked + .toggle-slider:before {
         transform: translateX(16px);
       }
+
+      /* Import / Export */
+      .data-btns {
+        display: flex;
+        gap: 8px;
+      }
+
+      .data-btn {
+        flex: 1;
+        padding: 10px;
+        background: rgba(255, 255, 255, 0.15);
+        border: 1px solid rgba(255, 255, 255, 0.3);
+        border-radius: 6px;
+        color: white;
+        font-size: 12px;
+        cursor: pointer;
+        transition: background 0.2s;
+      }
+
+      .data-btn:hover {
+        background: rgba(255, 255, 255, 0.25);
+      }
+
+      .import-error {
+        margin-top: 8px;
+        font-size: 11px;
+        color: #ff9999;
+        text-align: center;
+      }
     </style>
   </head>
 
@@ -471,6 +504,14 @@
             <input type="checkbox" id="debug-toggle">
             <span class="toggle-slider"></span>
           </label>
+        </div>
+      </div>
+
+      <div class="settings-section">
+        <h3 data-i18n="dataSection">Données</h3>
+        <div class="data-btns">
+          <button class="data-btn" id="export-btn" data-i18n="exportStats">Exporter</button>
+          <button class="data-btn" id="import-btn" data-i18n="importStats">Importer</button>
         </div>
       </div>
 

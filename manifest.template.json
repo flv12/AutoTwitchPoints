@@ -1,7 +1,7 @@
 {
     "manifest_version": 3,
     "name": "AutoTwitchPoints",
-    "version": "2.1.1",
+    "version": "0.0.0",
     "description": "Automatically collects twitch channel points",
     "default_locale": "en",
     "icons": {
@@ -14,7 +14,7 @@
             "js": ["src/js/app.js"]
         }
     ],
-    "permissions": ["storage"],
+    "permissions": ["storage", "windows"],
     "browser_specific_settings": {
         "gecko": {
             "id": "{40539aea-e9a3-4ff1-8ca0-0e2e0187ea42}",

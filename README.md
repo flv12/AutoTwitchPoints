@@ -20,16 +20,17 @@ Automatically collects Twitch channel points bonus.
 ### Firefox (Add-ons Store)
 👉 https://addons.mozilla.org/fr/firefox/addon/autotwitchpoints/
 
+### Firefox (build for prod)
+```bash
+npm run package
+```
+Produces `../autotwitchpoints.zip` ready for addon submission (regenerates `manifest.json` from the prod template first).
+
 ### Firefox (Manual)
 1. Download or clone this repository
 2. Open Firefox and go to `about:debugging#/runtime/this-firefox`
 3. Click "Load Temporary Add-on"
 4. Select the `manifest.json` file
-
-### Firefox (build for prod)
-```bash
-zip -r -FS ../autotwitchpoints.zip manifest.json icons/ src/ _locales/
-```
 
 ### Chrome (Manual)
 1. Download or clone this repository
@@ -47,18 +48,4 @@ Once installed, just visit any Twitch channel. The extension will automatically:
 
 ## Changelog
 
-### v2.1
-- Added stats per channel (📊 button)
-- Added settings page (⚙️ button)
-- Added debug mode toggle
-- Added individual channel stats deletion
-
-### v2.0
-- Migrated to Manifest V3
-- Added Chrome compatibility
-- Replaced polling with MutationObserver (better performance)
-- Added resilient selector fallbacks
-- Improved error handling
-
-### v1.2
-- Initial public release
+See [CHANGELOG.md](CHANGELOG.md).
