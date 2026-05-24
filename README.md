@@ -28,8 +28,9 @@ Automatically collects Twitch channel points bonus.
 
 ### Firefox (build for prod)
 ```bash
-zip -r -FS ../autotwitchpoints.zip manifest.json icons/ src/ _locales/
+npm run package
 ```
+Produces `../autotwitchpoints.zip` ready for addon submission (regenerates `manifest.json` from the prod template first).
 
 ### Chrome (Manual)
 1. Download or clone this repository
